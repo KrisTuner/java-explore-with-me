@@ -29,12 +29,4 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> 
                                               @Param("end") LocalDateTime end,
                                               @Param("uris") List<String> uris,
                                               @Param("urisEmpty") boolean urisEmpty);
-
-    interface ViewStatsProjection {
-        String getApp();
-
-        String getUri();
-
-        Long getHits();
-    }
 }

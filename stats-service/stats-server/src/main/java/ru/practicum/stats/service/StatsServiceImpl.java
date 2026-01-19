@@ -12,7 +12,7 @@ import ru.practicum.stats.dto.EndpointHitDto;
 import ru.practicum.stats.dto.ViewStatsDto;
 import ru.practicum.stats.mapper.StatsMapper;
 import ru.practicum.stats.repository.EndpointHitRepository;
-
+import ru.practicum.stats.repository.ViewStatsProjection;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,7 +38,7 @@ public class StatsServiceImpl implements StatsService {
         List<String> uriFilter = uris == null ? Collections.emptyList() : uris;
         boolean urisEmpty = uriFilter.isEmpty();
 
-        List<EndpointHitRepository.ViewStatsProjection> stats = unique
+        List<ViewStatsProjection> stats = unique
                 ? endpointHitRepository.findUniqueStats(startTime, endTime, uriFilter, urisEmpty)
                 : endpointHitRepository.findStats(startTime, endTime, uriFilter, urisEmpty);
 
@@ -47,7 +47,7 @@ public class StatsServiceImpl implements StatsService {
                 .collect(Collectors.toList());
     }
 
-    private ViewStatsDto toDto(EndpointHitRepository.ViewStatsProjection projection) {
+    private ViewStatsDto toDto(ViewStatsProjection projection) {
         ViewStatsDto dto = new ViewStatsDto();
         dto.setApp(projection.getApp());
         dto.setUri(projection.getUri());
