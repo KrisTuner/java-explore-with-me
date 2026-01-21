@@ -1,14 +1,40 @@
 services:
   stats-server:
+    build: ./stats-service/stats-server
     ports:
       - "9090:9090"
+    environment:
+      - STATS_DB_NAME=${STATS_DB_NAME:-stats}
+      - STATS_DB_USER=${STATS_DB_USER:-stats}
+      - STATS_DB_PASSWORD=${STATS_DB_PASSWORD:-stats}
+    depends_on:
+      - stats-db
 
   stats-db:
     image: postgres:16.1
+    environment:
+      POSTGRES_DB: ${STATS_DB_NAME:-stats}
+      POSTGRES_USER: ${STATS_DB_USER:-stats}
+      POSTGRES_PASSWORD: ${STATS_DB_PASSWORD:-stats}
+    ports:
+      - "5433:5432"
 
   ewm-service:
+    build: ./main-service
     ports:
       - "8080:8080"
+    environment:
+      - EWM_DB_NAME=${EWM_DB_NAME:-ewm}
+      - EWM_DB_USER=${EWM_DB_USER:-ewm}
+      - EWM_DB_PASSWORD=${EWM_DB_PASSWORD:-ewm}
+      - STATS_BASE_URL=http://stats-server:9090
+    depends_on:
+      - ewm-db
+      - stats-server
 
   ewm-db:
     image: postgres:16.1
+    environment:
+      POSTGRES_DB: ${EWM_DB_NAME:-ewm}
+      POSTGRES_USER: ${EWM_DB_USER:-ewm}
+      POSTGRES_PASSWORD: ${EWM_DB_PASSWORD:-ewm}
